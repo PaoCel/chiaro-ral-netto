@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   calculateSalary,
   DEFAULT_INPUT,
@@ -16,10 +16,10 @@ function pct(value: number) {
 
 export default function Home() {
   const [draft, setDraft] = useState<SalaryInput>(DEFAULT_INPUT);
-  const [calculated, setCalculated] = useState<SalaryInput>(DEFAULT_INPUT);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const calculated = draft;
   const result = useMemo(() => calculateSalary(calculated), [calculated]);
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
@@ -29,14 +29,6 @@ export default function Home() {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, []);
 
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    setCalculated({
-      ...draft,
-      grossAnnual: Math.min(100000, Math.max(15000, Number(draft.grossAnnual) || 15000)),
-    });
-  }
-
   async function copySummary() {
     const summary = `RAL ${formatCurrency(calculated.grossAnnual)} · Netto annuo ${formatCurrency(result.netAnnual)} · Netto medio mensile ${formatCurrency(result.netMonthly)} · Trattenute ${formatCurrency(result.totalWithholdings)}`;
     await navigator.clipboard.writeText(summary);
@@ -44,11 +36,11 @@ export default function Home() {
     window.setTimeout(() => setCopied(false), 1800);
   }
 
-  const netShare = (result.netAnnual / calculated.grossAnnual) * 100;
+  const netShare = calculated.grossAnnual > 0 ? (result.netAnnual / calculated.grossAnnual) * 100 : 0;
   const allocationBase = result.netAnnual + result.employeeContributions + result.totalTaxes;
-  const netAllocation = (result.netAnnual / allocationBase) * 100;
-  const contributionAllocation = (result.employeeContributions / allocationBase) * 100;
-  const taxAllocation = (result.totalTaxes / allocationBase) * 100;
+  const netAllocation = allocationBase > 0 ? (result.netAnnual / allocationBase) * 100 : 0;
+  const contributionAllocation = allocationBase > 0 ? (result.employeeContributions / allocationBase) * 100 : 0;
+  const taxAllocation = allocationBase > 0 ? (result.totalTaxes / allocationBase) * 100 : 0;
 
   return (
     <main>
@@ -64,23 +56,19 @@ export default function Home() {
         </nav>
         <div className="topbar-actions">
           <span className="year-pill"><span className="live-dot" /> Regole 2026</span>
-          <button className="icon-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Apri impostazioni avanzate">
-            <span aria-hidden="true">☰</span>
-            <span className="desktop-only">Personalizza</span>
-          </button>
         </div>
       </header>
 
       <section className="workspace-intro" id="top">
         <div className="intro-copy">
-          <div className="eyebrow"><span>Calcolatore aziende</span><i /> Milano · 2026</div>
+          <div className="eyebrow"><span>Calcolatore aziende</span></div>
           <h1>Calcolo netto<br /><em>da RAL</em></h1>
           <p>Inserisci la RAL del dipendente per stimare netto annuale, netto mensile e trattenute.</p>
         </div>
       </section>
 
       <section className="calculator-shell tool-shell" id="calcolatore" aria-label="Calcolatore stipendio netto">
-        <form className="input-panel controls-panel" onSubmit={submit}>
+        <section className="input-panel controls-panel">
           <div className="panel-heading tool-panel-heading">
             <div>
               <span className="step">SIMULAZIONE</span>
@@ -91,7 +79,6 @@ export default function Home() {
           <div className="primary-field">
             <div className="field-label-row">
               <label className="ral-label" htmlFor="ral">RAL del dipendente</label>
-              <span className="info-tip" title="La retribuzione lorda annuale indicata nel contratto, esclusi TFR e bonus.">?</span>
             </div>
             <div className="money-input-wrap">
               <span>€</span>
@@ -103,6 +90,7 @@ export default function Home() {
                 step="500"
                 value={draft.grossAnnual}
                 onChange={(event) => setDraft({ ...draft, grossAnnual: Number(event.target.value) })}
+                onBlur={() => setDraft({ ...draft, grossAnnual: Math.min(100000, Math.max(15000, Number(draft.grossAnnual) || 15000)) })}
                 aria-describedby="ral-help"
               />
             </div>
@@ -148,10 +136,7 @@ export default function Home() {
             </div>
           </div>
 
-          <button className="calculate-button" type="submit">
-            Calcola il netto <span aria-hidden="true">→</span>
-          </button>
-        </form>
+        </section>
 
         <section className="result-panel results-workspace" aria-live="polite">
           <div className="result-topline result-header">
@@ -317,7 +302,7 @@ export default function Home() {
               <div><span className="section-kicker">Parametri</span><h2 id="settings-title">Modifica</h2></div>
               <button type="button" className="drawer-close" onClick={() => setSettingsOpen(false)} aria-label="Chiudi">×</button>
             </div>
-            <p className="drawer-copy">Mensilità e giorni lavorati usati nella simulazione.</p>
+            <p className="drawer-copy">I risultati si aggiornano automaticamente.</p>
 
             <div className="setting-group">
               <label htmlFor="months">Mensilità</label>
@@ -350,7 +335,6 @@ export default function Home() {
               <small>Aliquota di Milano, con esenzione fino a 23.000 €.</small>
             </div>
 
-            <button className="calculate-button drawer-apply" type="button" onClick={() => { setCalculated(draft); setSettingsOpen(false); }}>Applica parametri <span>→</span></button>
             <button className="reset-button" type="button" onClick={() => setDraft(DEFAULT_INPUT)}>Ripristina valori predefiniti</button>
           </aside>
         </div>

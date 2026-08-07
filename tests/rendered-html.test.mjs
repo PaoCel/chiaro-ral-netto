@@ -28,5 +28,6 @@ test("server-renders the Chiaro calculator", async () => {
   assert.match(html, /RAL e trattenute/);
   assert.match(html, /Metodo di calcolo/);
   assert.match(html, /Sources/);
+  assert.doesNotMatch(html, /Milano · 2026|Calcola il netto|Apri impostazioni avanzate/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
