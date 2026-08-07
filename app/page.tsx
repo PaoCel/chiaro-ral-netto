@@ -16,6 +16,7 @@ function pct(value: number) {
 
 export default function Home() {
   const [draft, setDraft] = useState<SalaryInput>(DEFAULT_INPUT);
+  const [settingsDraft, setSettingsDraft] = useState<SalaryInput>(DEFAULT_INPUT);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -28,6 +29,20 @@ export default function Home() {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, []);
+
+  function openSettings() {
+    setSettingsDraft(draft);
+    setSettingsOpen(true);
+  }
+
+  function confirmSettings() {
+    setDraft((current) => ({
+      ...current,
+      months: settingsDraft.months,
+      workDays: settingsDraft.workDays,
+    }));
+    setSettingsOpen(false);
+  }
 
   async function copySummary() {
     const summary = `RAL ${formatCurrency(calculated.grossAnnual)} · Netto annuo ${formatCurrency(result.netAnnual)} · Netto medio mensile ${formatCurrency(result.netMonthly)} · Trattenute ${formatCurrency(result.totalWithholdings)}`;
@@ -125,7 +140,7 @@ export default function Home() {
           <div className="parameter-card">
             <div className="parameter-heading">
               <div><span className="parameter-dot" /> <strong>Parametri utilizzati</strong></div>
-              <button type="button" onClick={() => setSettingsOpen(true)} aria-label="Modifica i parametri utilizzati" title="Modifica parametri">✎</button>
+              <button type="button" onClick={openSettings} aria-label="Modifica i parametri utilizzati" title="Modifica parametri">✎</button>
             </div>
             <div className="parameter-grid">
               <div><span>Contratto</span><strong>Tempo indeterminato</strong></div>
@@ -295,26 +310,29 @@ export default function Home() {
       </footer>
 
       {settingsOpen && (
-        <div className="drawer-layer" role="presentation">
-          <button className="drawer-backdrop" aria-label="Chiudi impostazioni" onClick={() => setSettingsOpen(false)} />
-          <aside className="settings-drawer" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-            <div className="drawer-header">
+        <div className="modal-layer" role="presentation">
+          <button className="modal-backdrop" aria-label="Annulla modifica parametri" onClick={() => setSettingsOpen(false)} />
+          <section className="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+            <div className="modal-header">
               <div><span className="section-kicker">Parametri</span><h2 id="settings-title">Modifica</h2></div>
-              <button type="button" className="drawer-close" onClick={() => setSettingsOpen(false)} aria-label="Chiudi">×</button>
+              <div className="modal-actions">
+                <button type="button" className="modal-action modal-cancel" onClick={() => setSettingsOpen(false)} aria-label="Annulla">×</button>
+                <button type="button" className="modal-action modal-confirm" onClick={confirmSettings} aria-label="Conferma parametri">✓</button>
+              </div>
             </div>
-            <p className="drawer-copy">I risultati si aggiornano automaticamente.</p>
+            <p className="modal-copy">Conferma le modifiche per aggiornare la simulazione.</p>
 
             <div className="setting-group">
               <label htmlFor="months">Mensilità</label>
               <div className="segmented">
-                {[12, 13, 14].map((months) => <button type="button" key={months} className={draft.months === months ? "active" : ""} onClick={() => setDraft({ ...draft, months })}>{months}</button>)}
+                {[12, 13, 14].map((months) => <button type="button" key={months} className={settingsDraft.months === months ? "active" : ""} onClick={() => setSettingsDraft({ ...settingsDraft, months })}>{months}</button>)}
               </div>
               <small>Il netto mensile è una media del netto annuale.</small>
             </div>
 
             <div className="setting-group two-inputs">
               <label htmlFor="days">Giorni lavorati</label>
-              <input id="days" type="number" min="1" max="365" value={draft.workDays} onChange={(e) => setDraft({ ...draft, workDays: Math.min(365, Math.max(1, Number(e.target.value))) })} />
+              <input id="days" type="number" min="1" max="365" value={settingsDraft.workDays} onChange={(e) => setSettingsDraft({ ...settingsDraft, workDays: Math.min(365, Math.max(1, Number(e.target.value))) })} />
               <small>Incidono sulle detrazioni da lavoro dipendente.</small>
             </div>
 
@@ -335,8 +353,8 @@ export default function Home() {
               <small>Aliquota di Milano, con esenzione fino a 23.000 €.</small>
             </div>
 
-            <button className="reset-button" type="button" onClick={() => setDraft(DEFAULT_INPUT)}>Ripristina valori predefiniti</button>
-          </aside>
+            <button className="reset-button" type="button" onClick={() => setSettingsDraft({ ...settingsDraft, months: DEFAULT_INPUT.months, workDays: DEFAULT_INPUT.workDays })}>Ripristina parametri predefiniti</button>
+          </section>
         </div>
       )}
     </main>
