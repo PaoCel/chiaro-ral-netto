@@ -64,6 +64,11 @@ export default function Home() {
           <span className="brand-mark">C</span>
           <span>chiaro</span>
         </a>
+        <nav className="nav-links" aria-label="Navigazione principale">
+          <a href="#calcolatore">Calcolatore</a>
+          <a href="#dettaglio">Dettaglio</a>
+          <a href="#metodo">Metodo e fonti</a>
+        </nav>
         <div className="topbar-actions">
           <span className="year-pill"><span className="live-dot" /> Regole 2026</span>
           <button className="icon-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Apri impostazioni avanzate">
@@ -73,35 +78,51 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="hero" id="top">
-        <div className="eyebrow"><span>Product exercise</span><i /> Jet HR</div>
-        <h1>Dalla RAL al netto,<br /><em>senza scatole nere.</em></h1>
-        <p className="hero-copy">Una stima trasparente dello stipendio: vedi quanto resta a te, quanto va in contributi e quante tasse paghi davvero.</p>
+      <section className="workspace-intro" id="top">
+        <div className="intro-copy">
+          <div className="eyebrow"><span>Calcolatore 2026</span><i /> Caso standard · Milano</div>
+          <h1>Calcola il tuo<br />stipendio netto</h1>
+          <p>Inserisci la RAL indicata nel contratto. Otterrai una stima del netto annuale e mensile, con il dettaglio completo delle trattenute.</p>
+        </div>
+        <div className="how-card" aria-label="Come usare il calcolatore">
+          <span className="section-kicker">Come funziona</span>
+          <ol>
+            <li><b>1</b><span><strong>Inserisci la RAL</strong><small>La retribuzione lorda annuale</small></span></li>
+            <li><b>2</b><span><strong>Controlla lo scenario</strong><small>Mensilità, residenza e aliquote</small></span></li>
+            <li><b>3</b><span><strong>Leggi il risultato</strong><small>Netto, tasse e contributi</small></span></li>
+          </ol>
+        </div>
       </section>
 
-      <section className="calculator-shell" aria-label="Calcolatore stipendio netto">
-        <form className="input-panel" onSubmit={submit}>
-          <div className="panel-heading">
+      <section className="calculator-shell tool-shell" id="calcolatore" aria-label="Calcolatore stipendio netto">
+        <form className="input-panel controls-panel" onSubmit={submit}>
+          <div className="panel-heading tool-panel-heading">
             <div>
-              <span className="step">01</span>
-              <h2>Inserisci la tua RAL</h2>
+              <span className="step">I TUOI DATI</span>
+              <h2>Imposta lo scenario</h2>
             </div>
-            <button type="button" className="text-button" onClick={() => setSettingsOpen(true)}>Opzioni avanzate <span>↗</span></button>
+            <button type="button" className="text-button" onClick={() => setSettingsOpen(true)}>Tutte le opzioni <span>↗</span></button>
           </div>
 
-          <label className="ral-label" htmlFor="ral">Retribuzione annua lorda</label>
-          <div className="money-input-wrap">
-            <span>€</span>
-            <input
-              id="ral"
-              type="number"
-              min="15000"
-              max="100000"
-              step="500"
-              value={draft.grossAnnual}
-              onChange={(event) => setDraft({ ...draft, grossAnnual: Number(event.target.value) })}
-              aria-describedby="ral-help"
-            />
+          <div className="primary-field">
+            <div className="field-label-row">
+              <label className="ral-label" htmlFor="ral">RAL — Retribuzione annua lorda</label>
+              <span className="info-tip" title="La retribuzione lorda annuale indicata nel contratto, esclusi TFR e bonus.">?</span>
+            </div>
+            <div className="money-input-wrap">
+              <span>€</span>
+              <input
+                id="ral"
+                type="number"
+                min="15000"
+                max="100000"
+                step="500"
+                value={draft.grossAnnual}
+                onChange={(event) => setDraft({ ...draft, grossAnnual: Number(event.target.value) })}
+                aria-describedby="ral-help"
+              />
+            </div>
+            <p className="field-help">Inserisci l’importo lordo annuo riportato nella proposta o nel contratto.</p>
           </div>
           <input
             className="ral-slider"
@@ -116,6 +137,7 @@ export default function Home() {
           <div className="range-labels" id="ral-help"><span>15.000 €</span><span>100.000 €</span></div>
 
           <div className="quick-values" aria-label="Valori RAL frequenti">
+            <span>Scelte rapide</span>
             {quickRal.map((value) => (
               <button
                 type="button"
@@ -128,55 +150,86 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="assumption-line">
-            <span className="assumption-icon">◎</span>
-            <p><strong>Scenario standard</strong><br />Dipendente privato · Milano · {draft.months} mensilità · Nessuna agevolazione</p>
+          <div className="visible-settings">
+            <div className="visible-setting">
+              <span>Mensilità</span>
+              <div className="mini-segmented">
+                {[12, 13, 14].map((months) => <button type="button" key={months} className={draft.months === months ? "active" : ""} onClick={() => setDraft({ ...draft, months })}>{months}</button>)}
+              </div>
+            </div>
+            <div className="visible-setting">
+              <span>Residenza fiscale</span>
+              <strong>Milano <small>Predefinita</small></strong>
+            </div>
+            <div className="visible-setting">
+              <span>Contratto</span>
+              <strong>Indeterminato <small>Privato</small></strong>
+            </div>
+          </div>
+
+          <div className="assumption-line tool-assumption">
+            <span className="assumption-icon">i</span>
+            <p>Il calcolo assume <strong>365 giorni lavorati</strong>, un solo reddito e nessuna agevolazione. Puoi modificare i parametri nelle opzioni avanzate.</p>
           </div>
 
           <button className="calculate-button" type="submit">
-            Calcola il mio netto <span aria-hidden="true">→</span>
+            Calcola lo stipendio netto <span aria-hidden="true">→</span>
           </button>
         </form>
 
-        <section className="result-panel" aria-live="polite">
-          <div className="result-topline">
-            <span className="step step-dark">02</span>
+        <section className="result-panel results-workspace" aria-live="polite">
+          <div className="result-topline result-header">
+            <div>
+              <span className="step step-dark">RISULTATO</span>
+              <h2>La tua simulazione</h2>
+            </div>
             <button type="button" className="copy-button" onClick={copySummary}>{copied ? "Copiato ✓" : "Copia riepilogo"}</button>
           </div>
-          <p className="result-label">Il tuo netto medio mensile</p>
-          <div className="hero-result">
-            <strong>{formatCurrency(result.netMonthly, 0)}</strong>
-            <span>/ mese</span>
-          </div>
-          <p className="result-context">su {calculated.months} mensilità · stima annuale 2026</p>
 
-          <div className="result-grid">
+          <div className="scenario-status"><span className="live-dot" /> Calcolo aggiornato · Regole fiscali 2026</div>
+
+          <div className="result-summary">
             <div>
+              <p className="result-label">Netto medio mensile</p>
+              <div className="hero-result">
+                <strong>{formatCurrency(result.netMonthly, 0)}</strong>
+                <span>/ mese</span>
+              </div>
+              <p className="result-context">Media su {calculated.months} mensilità</p>
+            </div>
+            <div className="annual-result">
               <span>Netto annuale</span>
               <strong>{formatCurrency(result.netAnnual)}</strong>
-            </div>
-            <div>
-              <span>Tasse annuali</span>
-              <strong>{formatCurrency(result.totalTaxes)}</strong>
-            </div>
-            <div>
-              <span>Contributi INPS</span>
-              <strong>{formatCurrency(result.employeeContributions)}</strong>
-            </div>
-            <div className="accent-stat">
-              <span>Resta a te</span>
-              <strong>{pct(netShare)}</strong>
+              <small>{pct(netShare)} della RAL</small>
             </div>
           </div>
 
-          <div className="raise-insight">
-            <span className="trend-icon">↗</span>
-            <p>Con <strong>1.000 € di RAL in più</strong>, il tuo netto crescerebbe di circa <strong>{formatCurrency(nextResult.netAnnual - result.netAnnual, 0)} l’anno</strong>.</p>
+          <div className="withholding-table" aria-label="Riepilogo del calcolo annuale">
+            <div className="table-heading"><span>Passaggio</span><span>Importo annuale</span></div>
+            <div><span><i className="calc-sign gross-sign">+</i> Retribuzione lorda</span><strong>{formatCurrency(calculated.grossAnnual)}</strong></div>
+            <div><span><i className="calc-sign">−</i> Contributi previdenziali</span><strong>− {formatCurrency(result.employeeContributions)}</strong></div>
+            <div><span><i className="calc-sign">−</i> Tasse complessive</span><strong>− {formatCurrency(result.totalTaxes)}</strong></div>
+            {result.cashBenefits > 0 && <div><span><i className="calc-sign benefit-sign">+</i> Benefici fiscali</span><strong>+ {formatCurrency(result.cashBenefits)}</strong></div>}
+            <div className="table-total"><span>Netto annuale stimato</span><strong>{formatCurrency(result.netAnnual)}</strong></div>
+          </div>
+
+          <div className="result-kpis">
+            <div><span>Tasse</span><strong>{formatCurrency(result.totalTaxes)}</strong><small>{pct(taxShare)} della RAL</small></div>
+            <div><span>Contributi</span><strong>{formatCurrency(result.employeeContributions)}</strong><small>{pct(contributionShare)} della RAL</small></div>
+            <div><span>Imponibile fiscale</span><strong>{formatCurrency(result.taxableIncome)}</strong><small>Dopo i contributi</small></div>
+          </div>
+
+          <div className="results-footer">
+            <div className="raise-insight">
+              <span className="trend-icon">↗</span>
+              <p>Con <strong>1.000 € di RAL in più</strong>, il netto crescerebbe di circa <strong>{formatCurrency(nextResult.netAnnual - result.netAnnual, 0)} l’anno</strong>.</p>
+            </div>
+            <a href="#dettaglio">Vedi tutte le voci ↓</a>
           </div>
         </section>
       </section>
 
-      <section className="breakdown-section">
+      <section className="breakdown-section" id="dettaglio">
         <div className="section-intro">
           <div>
             <span className="section-kicker">La composizione</span>
