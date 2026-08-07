@@ -21,11 +21,11 @@ test("server-renders the Chiaro calculator", async () => {
   const html = await response.text();
   assert.match(html, /<html[^>]*lang="it"/i);
   assert.match(html, /<title>Chiaro — Calcolo stipendio netto 2026<\/title>/i);
-  assert.match(html, /Calcola il tuo/);
-  assert.match(html, /Imposta lo scenario/);
-  assert.match(html, /Come funziona/);
-  assert.match(html, /La tua simulazione/);
-  assert.match(html, /Dove va la tua RAL/);
+  assert.match(html, /Dal lordo al netto/);
+  assert.match(html, /Dati del dipendente/);
+  assert.match(html, /Parametri utilizzati/);
+  assert.match(html, /Risultato della simulazione/);
+  assert.match(html, /Come si compone la RAL/);
   assert.match(html, /Come arriviamo al risultato/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
