@@ -21,11 +21,6 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
 
   const result = useMemo(() => calculateSalary(calculated), [calculated]);
-  const nextResult = useMemo(
-    () => calculateSalary({ ...calculated, grossAnnual: calculated.grossAnnual + 1000 }),
-    [calculated],
-  );
-
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") setSettingsOpen(false);
@@ -65,7 +60,7 @@ export default function Home() {
         <nav className="nav-links" aria-label="Navigazione principale">
           <a href="#calcolatore">Calcolatore</a>
           <a href="#dettaglio">Dettaglio</a>
-          <a href="#metodo">Metodo e fonti</a>
+          <a href="#metodo">Metodo</a>
         </nav>
         <div className="topbar-actions">
           <span className="year-pill"><span className="live-dot" /> Regole 2026</span>
@@ -78,9 +73,9 @@ export default function Home() {
 
       <section className="workspace-intro" id="top">
         <div className="intro-copy">
-          <div className="eyebrow"><span>Strumento per aziende</span><i /> Regole 2026 · Milano</div>
-          <h1>Dal lordo al netto,<br /><em>voce per voce.</em></h1>
-          <p>Simula il netto di un dipendente partendo dalla RAL. Ottieni una stima annuale e mensile, con tasse, contributi e parametri sempre visibili.</p>
+          <div className="eyebrow"><span>Calcolatore aziende</span><i /> Milano · 2026</div>
+          <h1>Calcolo netto<br /><em>da RAL</em></h1>
+          <p>Inserisci la RAL del dipendente per stimare netto annuale, netto mensile e trattenute.</p>
         </div>
       </section>
 
@@ -149,7 +144,7 @@ export default function Home() {
               <div><span>Residenza fiscale</span><strong>Milano</strong></div>
               <div><span>Mensilità</span><strong>{draft.months}</strong></div>
               <div><span>Giorni lavorati</span><strong>{draft.workDays}</strong></div>
-              <div className="parameter-wide"><span>Contributi dipendente</span><strong>{pct(draft.employeeContributionRate)}</strong></div>
+              <div className="parameter-wide" title="Quota previdenziale trattenuta al dipendente e versata all’INPS"><span>Contributi previdenziali a carico del dipendente</span><strong>{pct(draft.employeeContributionRate)} · FPLD</strong></div>
             </div>
           </div>
 
@@ -162,12 +157,12 @@ export default function Home() {
           <div className="result-topline result-header">
             <div>
               <span className="step step-dark">RISULTATO</span>
-              <h2>Risultato della simulazione</h2>
+              <h2>Stima</h2>
             </div>
             <button type="button" className="copy-button" onClick={copySummary}>{copied ? "Copiato ✓" : "Copia riepilogo"}</button>
           </div>
 
-          <div className="scenario-status"><span className="live-dot" /> Calcolo aggiornato · Regole fiscali 2026</div>
+          <div className="scenario-status"><span className="live-dot" /> Regole fiscali 2026</div>
 
           <div className="result-summary">
             <div>
@@ -188,15 +183,11 @@ export default function Home() {
           <div className="result-grid employer-results">
             <div><span>Netto annuale</span><strong>{formatCurrency(result.netAnnual)}</strong></div>
             <div><span>Tasse</span><strong>{formatCurrency(result.totalTaxes)}</strong></div>
-            <div><span>Contributi</span><strong>{formatCurrency(result.employeeContributions)}</strong></div>
+            <div><span>Contributi previdenziali</span><strong>{formatCurrency(result.employeeContributions)}</strong></div>
             <div className="accent-stat"><span>Resta al dipendente</span><strong>{pct(netShare)}</strong></div>
           </div>
 
           <div className="results-footer">
-            <div className="raise-insight">
-              <span className="trend-icon">↗</span>
-              <p>Un aumento di <strong>1.000 € di RAL</strong> produrrebbe circa <strong>{formatCurrency(nextResult.netAnnual - result.netAnnual, 0)} di netto annuo in più</strong>.</p>
-            </div>
             <a href="#dettaglio">Vedi tutte le voci ↓</a>
           </div>
         </section>
@@ -205,8 +196,8 @@ export default function Home() {
       <section className="breakdown-section" id="dettaglio">
         <div className="section-intro">
           <div>
-            <span className="section-kicker">La composizione</span>
-            <h2>Come si compone la RAL</h2>
+            <span className="section-kicker">Dettaglio annuale</span>
+            <h2>RAL e trattenute</h2>
           </div>
           <p>Ogni importo è calcolato sull’intero anno. Le addizionali dipendono dalla residenza fiscale impostata.</p>
         </div>
@@ -261,9 +252,9 @@ export default function Home() {
 
       <section className="method-section" id="metodo">
         <div className="method-heading">
-          <span className="section-kicker">Trasparenza prima di tutto</span>
-          <h2>Come arriviamo al risultato</h2>
-          <p>Il modello descrive un caso standard, non tenta di simulare un cedolino completo. Ogni passaggio è isolato e verificabile.</p>
+          <span className="section-kicker">Note sul calcolo</span>
+          <h2>Metodo di calcolo</h2>
+          <p>Stima annuale per il caso standard indicato. Non sostituisce un cedolino.</p>
         </div>
 
         <div className="calculation-flow">
@@ -301,13 +292,14 @@ export default function Home() {
               <li>Differenze tra singoli cedolini mensili</li>
             </ul>
           </div>
-          <div className="sources-column">
-            <h3>Fonti primarie</h3>
-            <a href="https://www.lavoro.gov.it/notizie/pagine/legge-di-bilancio-2026-le-principali-misure-lavoratori-imprese-e-famiglie" target="_blank" rel="noreferrer"><span>IRPEF 2026</span><b>Ministero del Lavoro ↗</b></a>
-            <a href="https://www.inps.it/it/it/inps-comunica/notizie/dettaglio-news-page.news.2026.02.lavoratori-dipendenti-limite-minimo-di-retribuzione-giornaliera-2026.html" target="_blank" rel="noreferrer"><span>Contributi</span><b>INPS ↗</b></a>
-            <a href="https://www.regione.lombardia.it/bollo-auto-e-tributi-regionali/red-addizionale-regionale-irpef" target="_blank" rel="noreferrer"><span>Addizionale regionale</span><b>Regione Lombardia ↗</b></a>
-            <a href="https://www.comune.milano.it/aree-tematiche/tributi/addizionale-comunale-irpef" target="_blank" rel="noreferrer"><span>Addizionale comunale</span><b>Comune di Milano ↗</b></a>
-          </div>
+        </div>
+
+        <div className="sources-note" aria-label="Sources">
+          <span>Sources</span>
+          <a href="https://www.lavoro.gov.it/notizie/pagine/legge-di-bilancio-2026-le-principali-misure-lavoratori-imprese-e-famiglie" target="_blank" rel="noreferrer">IRPEF 2026 — Ministero del Lavoro</a>
+          <a href="https://www.inps.it/it/it/inps-comunica/atti/circolari-messaggi-e-normativa/dettaglio.circolari-e-messaggi.2026.01.circolare-numero-6-del-30-01-2026_15151.html" target="_blank" rel="noreferrer">Contributi — INPS, circolare 6/2026</a>
+          <a href="https://www.regione.lombardia.it/bollo-auto-e-tributi-regionali/red-addizionale-regionale-irpef" target="_blank" rel="noreferrer">Addizionale regionale — Regione Lombardia</a>
+          <a href="https://www.comune.milano.it/aree-tematiche/tributi/addizionale-comunale-irpef" target="_blank" rel="noreferrer">Addizionale comunale — Comune di Milano</a>
         </div>
       </section>
 
@@ -322,10 +314,10 @@ export default function Home() {
           <button className="drawer-backdrop" aria-label="Chiudi impostazioni" onClick={() => setSettingsOpen(false)} />
           <aside className="settings-drawer" role="dialog" aria-modal="true" aria-labelledby="settings-title">
             <div className="drawer-header">
-              <div><span className="section-kicker">Scenario</span><h2 id="settings-title">Personalizza</h2></div>
+              <div><span className="section-kicker">Parametri</span><h2 id="settings-title">Modifica</h2></div>
               <button type="button" className="drawer-close" onClick={() => setSettingsOpen(false)} aria-label="Chiudi">×</button>
             </div>
-            <p className="drawer-copy">Modifica le poche variabili che incidono sul caso standard. Il calcolo si aggiorna premendo “Applica”.</p>
+            <p className="drawer-copy">Mensilità e giorni lavorati usati nella simulazione.</p>
 
             <div className="setting-group">
               <label htmlFor="months">Mensilità</label>
@@ -341,24 +333,24 @@ export default function Home() {
               <small>Incidono sulle detrazioni da lavoro dipendente.</small>
             </div>
 
-            <div className="setting-group two-inputs">
-              <label htmlFor="contribution">Contributi dipendente</label>
-              <div className="suffix-input"><input id="contribution" type="number" min="5" max="15" step="0.01" value={draft.employeeContributionRate} onChange={(e) => setDraft({ ...draft, employeeContributionRate: Number(e.target.value) })} /><span>%</span></div>
-              <small>9,19% è l’assunzione standard del prototipo.</small>
+            <div className="setting-group locked-setting contribution-setting">
+              <span>Contributi previdenziali a carico del dipendente</span>
+              <strong>{pct(DEFAULT_INPUT.employeeContributionRate)} <i>Fisso</i></strong>
+              <small>Aliquota standard FPLD. L’1% aggiuntivo oltre 56.224 € è applicato automaticamente.</small>
             </div>
 
             <div className="setting-group locked-setting">
               <span>Residenza fiscale</span>
-              <strong>Milano, Lombardia <i>Default</i></strong>
+              <strong>Milano, Lombardia <i>Fisso</i></strong>
             </div>
 
-            <div className="setting-group two-inputs">
-              <label htmlFor="municipal">Addizionale comunale</label>
-              <div className="suffix-input"><input id="municipal" type="number" min="0" max="3" step="0.1" value={draft.municipalRate} onChange={(e) => setDraft({ ...draft, municipalRate: Number(e.target.value) })} /><span>%</span></div>
-              <small>A Milano è 0,8%, con esenzione fino a 23.000 €.</small>
+            <div className="setting-group locked-setting contribution-setting">
+              <span>Addizionale comunale</span>
+              <strong>{pct(DEFAULT_INPUT.municipalRate)} <i>Fisso</i></strong>
+              <small>Aliquota di Milano, con esenzione fino a 23.000 €.</small>
             </div>
 
-            <button className="calculate-button drawer-apply" type="button" onClick={() => { setCalculated(draft); setSettingsOpen(false); }}>Applica allo scenario <span>→</span></button>
+            <button className="calculate-button drawer-apply" type="button" onClick={() => { setCalculated(draft); setSettingsOpen(false); }}>Applica parametri <span>→</span></button>
             <button className="reset-button" type="button" onClick={() => setDraft(DEFAULT_INPUT)}>Ripristina valori predefiniti</button>
           </aside>
         </div>
