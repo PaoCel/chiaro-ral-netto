@@ -409,6 +409,155 @@ footer a { font-weight: 700; text-decoration: none; }
 .contribution-setting small { max-width: 330px; line-height: 1.5; }
 .reset-button { width: 100%; background: none; border: 0; padding: 18px; color: #838b86; font-size: 10px; text-decoration: underline; cursor: pointer; }
 
+/* --- Catena costo azienda -> RAL -> netto -------------------------------- */
+.value-chain {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1.05fr;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.value-chain > li { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.value-chain span { color: #909b95; font-size: 8px; text-transform: uppercase; letter-spacing: .8px; }
+.value-chain strong { font-family: var(--font-display); font-size: clamp(17px, 2vw, 23px); letter-spacing: -.9px; white-space: nowrap; }
+.value-chain small { color: #7f8b85; font-size: 8px; }
+.value-chain .chain-arrow { color: #5d6a64; font-size: 14px; align-items: center; }
+.value-chain .chain-final strong { color: var(--lime); }
+
+.payslip-preview { display: grid; grid-template-columns: 1.25fr .75fr; align-items: end; gap: 28px; position: relative; z-index: 1; }
+.payslip-preview .result-label { margin: 0 0 5px; font-size: 11px; }
+.payslip-preview .hero-result strong { font-size: clamp(46px, 4.6vw, 62px); }
+.payslip-preview .result-context { margin: 8px 0 0; }
+
+.raise-simulation {
+  margin-top: 18px;
+  padding: 14px 15px;
+  border: 1px solid rgba(218,250,83,.3);
+  border-radius: 11px;
+  background: rgba(218,250,83,.07);
+  position: relative;
+  z-index: 1;
+}
+.raise-simulation p { margin: 0; font-size: 10px; line-height: 1.65; color: #c4ccc7; }
+.raise-simulation strong { color: var(--lime); font-weight: 700; }
+.raise-badge { display: inline-block; margin-top: 9px; color: #8f9a94; font-size: 8px; letter-spacing: .5px; text-transform: uppercase; }
+
+/* --- Fonte inline per singola voce --------------------------------------- */
+.source-note { display: inline-block; position: relative; margin-left: 5px; }
+.source-note > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  opacity: .5;
+}
+.source-note > summary::-webkit-details-marker { display: none; }
+.source-note > summary::marker { content: ""; }
+.source-note > summary:hover,
+.source-note[open] > summary { opacity: 1; background: var(--lime); color: var(--ink); border-color: var(--lime); }
+.source-body {
+  position: absolute;
+  z-index: 6;
+  top: calc(100% + 7px);
+  left: 0;
+  width: 258px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #dbe2de;
+  box-shadow: 0 18px 44px rgba(10,20,16,.32);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.source-body p { margin: 0; font-size: 9px; line-height: 1.55; }
+.source-formula { color: var(--lime); font-weight: 600; }
+.source-norm { margin-top: 7px !important; color: #98a29d; }
+.source-body a { display: inline-block; margin-top: 9px; color: #cfd6d2; font-size: 8px; border-bottom: 1px solid rgba(255,255,255,.3); text-decoration: none; }
+.source-body a:hover { color: var(--lime); border-color: var(--lime); }
+.dark-card .source-body { border: 1px solid rgba(255,255,255,.22); }
+.detail-card:nth-child(n+4) .source-body { left: auto; right: 0; }
+
+/* --- Confronto fra mensilità --------------------------------------------- */
+.payslip-table { background: var(--white); border: 1px solid #e0dfd6; border-radius: 14px; overflow: hidden; }
+.payslip-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  align-items: center;
+  gap: 16px;
+  min-height: 46px;
+  padding: 0 24px;
+  border-bottom: 1px solid #ecebe3;
+  font-size: 11px;
+  color: #6c756f;
+}
+.payslip-row:last-child { border-bottom: 0; }
+.payslip-row b { font-family: var(--font-display); font-size: 13px; color: var(--ink); text-align: right; font-weight: 600; }
+.payslip-head { min-height: 38px; background: #f7f6ef; color: #7c847f; font-size: 8px; text-transform: uppercase; letter-spacing: .9px; }
+.payslip-head span:not(:first-child) { text-align: right; }
+.payslip-total { min-height: 58px; background: var(--ink); color: #b9c2bd; }
+.payslip-total b { color: var(--lime); font-size: 17px; }
+.payslip-row .muted-cell { color: #a4aca7; font-family: var(--font-body); font-size: 9px; font-style: italic; font-weight: 400; }
+.payslip-check { margin: 16px 2px 0; color: #78817c; font-size: 10px; line-height: 1.7; }
+.payslip-check strong { color: var(--ink); }
+
+/* --- Curva marginale ------------------------------------------------------ */
+.chart-card { margin: 0; background: var(--white); border: 1px solid #e0dfd6; border-radius: 14px; padding: 24px 26px 18px; }
+.marginal-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.chart-grid { stroke: #eae9e0; stroke-width: 1; }
+.chart-zero { stroke: #b7b6ab; stroke-width: 1; stroke-dasharray: 3 3; }
+.chart-band { fill: rgba(246,203,183,.32); }
+.chart-area { fill: rgba(21,35,31,.06); }
+.chart-line { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart-cliff { stroke: #c8603f; stroke-width: 1; stroke-dasharray: 4 3; }
+.chart-cliff-label { fill: #b8563a; font-size: 8px; font-weight: 700; }
+.chart-marker-line { stroke: #99a29d; stroke-width: 1; }
+.chart-marker { fill: var(--lime); stroke: var(--ink); stroke-width: 2; }
+.chart-label { font-family: var(--font-body); font-size: 8px; fill: #8b928d; }
+.chart-label-y { text-anchor: end; }
+.chart-label-x { text-anchor: middle; }
+.chart-card figcaption { margin-top: 12px; padding-top: 12px; border-top: 1px solid #eeede6; color: #78817c; font-size: 10px; line-height: 1.65; }
+.chart-card figcaption strong { color: var(--ink); }
+
+.cliff-callout { margin-top: 13px; background: var(--peach); border-radius: 14px; padding: 26px 28px; }
+.cliff-callout h3 { font-family: var(--font-display); font-size: 16px; margin: 0 0 10px; }
+.cliff-callout p { margin: 0; max-width: 640px; color: #6c5449; font-size: 11px; line-height: 1.7; }
+.cliff-callout strong { color: #3f2f27; }
+.cliff-figures { display: flex; align-items: center; gap: 16px; margin-top: 20px; }
+.cliff-figures > div { background: rgba(255,255,255,.6); border-radius: 10px; padding: 13px 16px; display: flex; flex-direction: column; gap: 3px; }
+.cliff-figures span { font-size: 8px; text-transform: uppercase; letter-spacing: .8px; color: #8a7267; }
+.cliff-figures strong { font-family: var(--font-display); font-size: 19px; letter-spacing: -.8px; color: #33261f; }
+.cliff-figures small { font-size: 8px; color: #91786b; }
+.cliff-figures > i { font-style: normal; color: #a9887a; }
+.cliff-figures .cliff-worse strong { color: #b2452a; }
+
+.bar-employer { background: #9fb1a6; }
+.bar-tfr { background: #e0d8bf; }
+.dot-employer { background: #9fb1a6; }
+.dot-tfr { background: #d8ceae; }
+.allocation-legend { flex-wrap: wrap; row-gap: 12px; }
+.detail-grid { grid-template-columns: repeat(5, 1fr); }
+.detail-card { padding: 22px 18px; }
+.detail-card > p { margin: 30px 0 7px; }
+.cost-card { background: #e8efe9; border-color: #d5e0d8; }
+
+@media (max-width: 1100px) {
+  .detail-grid { grid-template-columns: repeat(3, 1fr); }
+  .detail-card:nth-child(n+4) .source-body { left: 0; right: auto; }
+}
+
 @media (max-width: 980px) {
   .calculator-shell { grid-template-columns: 1fr; }
   .nav-links { display: none; }
@@ -427,7 +576,7 @@ footer a { font-weight: 700; text-decoration: none; }
   .intro-copy h1 { font-size: 44px; letter-spacing: -3px; }
   .intro-copy > p { font-size: 13px; }
   .calculator-shell { width: 94vw; border-radius: 18px; margin-bottom: 75px; }
-  .input-panel, .result-panel { padding: 34px 25px; }
+  .input-panel, .result-panel { padding: 30px 23px; }
   .panel-heading { margin-bottom: 45px; }
   .panel-heading .text-button { display: none; }
   .tool-panel-heading { margin-bottom: 26px; }
@@ -442,6 +591,18 @@ footer a { font-weight: 700; text-decoration: none; }
   .allocation-legend { gap: 12px; justify-content: space-between; }
   .allocation-legend > div { gap: 5px; }
   .detail-grid { grid-template-columns: 1fr; }
+  .value-chain { grid-template-columns: 1fr; gap: 14px; }
+  .value-chain .chain-arrow { display: none; }
+  .payslip-preview { grid-template-columns: 1fr; gap: 16px; }
+  .payslip-preview .hero-result strong { font-size: 52px; }
+  .payslip-row { grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; padding: 0 15px; font-size: 10px; }
+  .payslip-row b { font-size: 11px; }
+  .payslip-total b { font-size: 14px; }
+  .source-body { width: 210px; left: auto; right: 0; }
+  .chart-card { padding: 18px 14px 12px; }
+  .cliff-callout { padding: 22px 20px; }
+  .cliff-figures { flex-direction: column; align-items: stretch; gap: 10px; }
+  .cliff-figures > i { display: none; }
   .detail-card { min-height: 230px; }
   .method-section { width: 94vw; padding: 45px 24px; }
   .calculation-flow { grid-template-columns: 1fr 1fr; }
