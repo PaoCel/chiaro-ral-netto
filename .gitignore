@@ -41,3 +41,9 @@ yarn-error.log*
 
 # TypeScript incremental build cache
 tsconfig.tsbuildinfo
+
+# Local working notes, not part of the project
+CLAUDE.md
+AGENTS.md
+.claude/
+.codex/
